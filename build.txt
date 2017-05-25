@@ -1,0 +1,9 @@
+minecraft_version=1.11.2
+mod_version=1.0.3
+
+java_compiler=1.8
+
+release_type=release
+project_id=247393
+
+hammercore_version=1.6.7

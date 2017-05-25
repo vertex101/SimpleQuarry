@@ -1,0 +1,11 @@
+
+itemGroup.simplequarry=Simple Quarry
+
+tile.simplequarry:fuel_quarry.name=Fuel Quarry
+tile.simplequarry:powered_quarry.name=Powered Quarry
+
+info.simplequarry:collect.yes=Collect
+info.simplequarry:collect.no=Don't Collect
+info.simplequarry:blockstobreak=Block To Break
+info.simplequarry:blocks_broken=Blocks Broken
+info.simplequarry:not_fuel=Not a Fuel!

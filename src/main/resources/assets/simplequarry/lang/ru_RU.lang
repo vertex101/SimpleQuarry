@@ -1,0 +1,11 @@
+﻿
+itemGroup.simplequarry=Simple Quarry
+
+tile.simplequarry:fuel_quarry.name=Топливный карьер
+tile.simplequarry:powered_quarry.name=Электрический карьер
+
+info.simplequarry:collect.yes=Собирать
+info.simplequarry:collect.no=Не собирать
+info.simplequarry:blockstobreak=блоков может сломать
+info.simplequarry:blocks_broken=Может сломать блоков
+info.simplequarry:not_fuel=Не топливо!

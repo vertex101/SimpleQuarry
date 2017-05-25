@@ -1,0 +1,12 @@
+{
+    "variants": {
+        "facing=north,mining=true": { "model": "simplequarry:powered_quarry" },
+        "facing=south,mining=true": { "model": "simplequarry:powered_quarry", "y": 180 },
+        "facing=west,mining=true":  { "model": "simplequarry:powered_quarry", "y": 270 },
+        "facing=east,mining=true":  { "model": "simplequarry:powered_quarry", "y": 90 },
+        "facing=north,mining=false": { "model": "simplequarry:powered_quarry_done" },
+        "facing=south,mining=false": { "model": "simplequarry:powered_quarry_done", "y": 180 },
+        "facing=west,mining=false":  { "model": "simplequarry:powered_quarry_done", "y": 270 },
+        "facing=east,mining=false":  { "model": "simplequarry:powered_quarry_done", "y": 90 }
+    }
+}
