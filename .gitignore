@@ -16,10 +16,13 @@ out
 # gradle
 build
 .gradle
+/gradle.properties
+*.html
 
 # other
 eclipse
 run
 libs
-*.bat
+libs_src
 *.rar
+*.jks

@@ -1,9 +1,16 @@
-minecraft_version=1.11.2
-mod_version=1.0.3
+#Project info
+author=APengu
 
-java_compiler=1.8
+#Runtime info
+forge_version=14.23.0.2529
+minecraft_version=1.12.2
+mcp=snapshot_20170624
+hc_version=1.9.6.2
 
-release_type=release
-project_id=247393
-
-hammercore_version=1.6.7
+#Mod info
+mod_id=simplequarry
+mod_id_fancy=SimpleQuarry
+mod_name=Simple Quarry
+mod_version=1b
+cf_project=247393
+release_type=beta
