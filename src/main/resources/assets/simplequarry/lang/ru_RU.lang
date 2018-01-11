@@ -4,8 +4,39 @@ itemGroup.simplequarry=Simple Quarry
 tile.simplequarry:fuel_quarry.name=Топливный карьер
 tile.simplequarry:powered_quarry.name=Электрический карьер
 
-info.simplequarry:collect.yes=Собирать
-info.simplequarry:collect.no=Не собирать
+item.simplequarry:upgrade_base.name=Основа апгрейда
+item.simplequarry:upgrade_silk.name=Апгрейд: шёлковое касание
+item.simplequarry:upgrade_silk.tooltip0=§4Несовместимо с удачей и авто-плавкой
+item.simplequarry:upgrade_fortune_1.name=Апгрейд: Удача I
+item.simplequarry:upgrade_fortune_1.tooltip0=§4Несовместимо с шёлковым касанием
+item.simplequarry:upgrade_fortune_2.name=Апгрейд: Удача II
+item.simplequarry:upgrade_fortune_2.tooltip0=Требует предыдущий уровень удачи.
+item.simplequarry:upgrade_fortune_2.tooltip1=§4Несовместимо с шёлковым касанием
+item.simplequarry:upgrade_fortune_3.name=Апгрейд: Удача III
+item.simplequarry:upgrade_fortune_3.tooltip0=Требует предыдущий уровень удачи.
+item.simplequarry:upgrade_fortune_3.tooltip1=§4Несовместимо с шёлковым касанием
+item.simplequarry:upgrade_efficiency_1.name=Апгрейд: Эффективность I
+item.simplequarry:upgrade_efficiency_2.name=Апгрейд: Эффективность II
+item.simplequarry:upgrade_efficiency_2.tooltip0=Требует предыдущий уровень эффективности.
+item.simplequarry:upgrade_efficiency_3.name=Апгрейд: Эффективность III
+item.simplequarry:upgrade_efficiency_3.tooltip0=Требует предыдущий уровень эффективности.
+
+item.simplequarry:upgrade_filter.name=Апгрейд: фильтр
+item.simplequarry:upgrade_filter.tooltip0=Имеет интерфейс; Позволяет указать, что
+item.simplequarry:upgrade_filter.tooltip1=должен подбирать карьер.
+
+item.simplequarry:upgrade_unification.name=Апгрейд: объединение
+item.simplequarry:upgrade_unification.tooltip0=Имеет интерфейс; Позволяет конвертировать
+item.simplequarry:upgrade_unification.tooltip1=руды в единый вариант.
+
+info.simplequarry:fuel_use_boost=Затраты топлива
+info.simplequarry:filter.whitelist=Собирать
+info.simplequarry:filter.blacklist=Не собирать
+info.simplequarry:filter.oredict.yes=Учитывать словарь руд
+info.simplequarry:filter.oredict.no=Игнорировать словарь руд
+info.simplequarry:filter.meta.yes=Учитывать урон
+info.simplequarry:filter.meta.no=Игнорировать урон
+
 info.simplequarry:blockstobreak=блоков может сломать
 info.simplequarry:blocks_broken=Может сломать блоков
 info.simplequarry:not_fuel=Не топливо!
