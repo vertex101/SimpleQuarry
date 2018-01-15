@@ -7,9 +7,10 @@ import org.lwjgl.opengl.GL11;
 import com.endie.simplequarry.InfoSQ;
 import com.endie.simplequarry.gui.c.ContainerFilter;
 import com.endie.simplequarry.gui.c.ContainerFilter.FilterData;
+import com.pengu.hammercore.client.texture.gui.DynGuiTex;
+import com.pengu.hammercore.client.texture.gui.GuiTexBakery;
 import com.pengu.hammercore.client.utils.UtilsFX;
 
-import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -17,15 +18,27 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundEvent;
 
 public class GuiFilter extends GuiContainer
 {
+	public DynGuiTex tex;
+	
 	public GuiFilter(EntityPlayer player, EnumHand hand)
 	{
 		super(new ContainerFilter(player, player.getHeldItem(hand)));
 		xSize = 176;
 		ySize = 166;
+	}
+	
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+		
+		GuiTexBakery bake = GuiTexBakery.start().body(0, 0, xSize, ySize);
+		for(Slot slot : inventorySlots.inventorySlots)
+			bake.slot(slot.xPos - 1, slot.yPos - 1);
+		tex = bake.bake();
 	}
 	
 	@Override
@@ -60,34 +73,30 @@ public class GuiFilter extends GuiContainer
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
 	{
-		UtilsFX.bindTexture(InfoSQ.MOD_ID, "textures/gui/gui_filter.png");
-		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-		
-		for(Slot slot : inventorySlots.inventorySlots)
-			drawTexturedModalRect(guiLeft - 1 + slot.xPos, guiTop - 1 + slot.yPos, xSize, 0, 18, 18);
+		tex.render(guiLeft, guiTop);
 		
 		GL11.glColor4f(1, 1, 1, 1);
 		
 		FilterData filter = ((ContainerFilter) inventorySlots).t;
 		
-		UtilsFX.bindTexture(InfoSQ.MOD_ID, "textures/gui/gui_filter.png");
+		UtilsFX.bindTexture(InfoSQ.MOD_ID, "textures/gui/widgets.png");
 		
 		{
 			boolean hover = mouseX >= guiLeft + 18 && mouseY >= guiTop + 17 && mouseX < guiLeft + 34 && mouseY < guiTop + 33;
 			
-			drawTexturedModalRect(guiLeft + 18, guiTop + 17, xSize + (hover ? 16 : 0), 18 + (filter.invert ? 16 : 0), 16, 16);
+			drawTexturedModalRect(guiLeft + 18, guiTop + 17, 13 + (hover ? 16 : 0), 16 + (filter.invert ? 16 : 0), 16, 16);
 		}
 		
 		{
 			boolean hover = mouseX >= guiLeft + 18 && mouseY >= guiTop + 17 + 18 && mouseX < guiLeft + 34 && mouseY < guiTop + 33 + 18;
 			
-			drawTexturedModalRect(guiLeft + 18, guiTop + 35, xSize + (hover ? 16 : 0), 50 + (filter.useod ? 0 : 16), 16, 16);
+			drawTexturedModalRect(guiLeft + 18, guiTop + 35, 13 + (hover ? 16 : 0), 48 + (filter.useod ? 0 : 16), 16, 16);
 		}
 		
 		{
 			boolean hover = mouseX >= guiLeft + 18 && mouseY >= guiTop + 17 + 36 && mouseX < guiLeft + 34 && mouseY < guiTop + 33 + 36;
 			
-			drawTexturedModalRect(guiLeft + 18, guiTop + 53, xSize + (hover ? 16 : 0), 82 + (filter.usemeta ? 0 : 16), 16, 16);
+			drawTexturedModalRect(guiLeft + 18, guiTop + 53, 13 + (hover ? 16 : 0), 80 + (filter.usemeta ? 0 : 16), 16, 16);
 		}
 	}
 	

@@ -12,26 +12,23 @@ import com.endie.simplequarry.cfg.ConfigsSQ;
 import com.endie.simplequarry.gui.c.ContainerPoweredQuarry;
 import com.endie.simplequarry.proxy.ClientProxy;
 import com.endie.simplequarry.tile.TilePoweredQuarry;
+import com.pengu.hammercore.client.texture.gui.DynGuiTex;
+import com.pengu.hammercore.client.texture.gui.GuiTexBakery;
+import com.pengu.hammercore.client.texture.gui.theme.GuiTheme;
 import com.pengu.hammercore.client.utils.RenderUtil;
-import com.pengu.hammercore.net.pkt.PacketSetProperty;
+import com.pengu.hammercore.client.utils.UtilsFX;
+import com.pengu.hammercore.color.InterpolationUtil;
+import com.pengu.hammercore.utils.ColorHelper;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.Slot;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.ResourceLocation;
 
 public class GuiPoweredQuarry extends GuiContainer
 {
-	public static ResourceLocation gui = new ResourceLocation(InfoSQ.MOD_ID, "textures/gui/gui_powered_quarry.png");
-	public static ResourceLocation widgets = new ResourceLocation(InfoSQ.MOD_ID, "textures/gui/widgets.png");
-	public static ResourceLocation furnace = new ResourceLocation("textures/gui/container/furnace.png");
 	final TilePoweredQuarry tile;
 	
 	public GuiPoweredQuarry(EntityPlayer player, TilePoweredQuarry tile)
@@ -42,27 +39,45 @@ public class GuiPoweredQuarry extends GuiContainer
 		ySize = 166;
 	}
 	
+	public DynGuiTex tex;
+	
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+		
+		GuiTexBakery bake = GuiTexBakery.start().body(0, 0, xSize, ySize);
+		for(Slot slot : inventorySlots.inventorySlots)
+			bake.slot(slot.xPos - 1, slot.yPos - 1);
+		bake.slot(6, 7, 13, 66);
+		tex = bake.bake();
+	}
+	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float pt, int mx, int my)
 	{
-		GL11.glEnable(3042);
-		mc.getTextureManager().bindTexture(gui);
-		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		GL11.glEnable(GL11.GL_BLEND);
+		tex.render(guiLeft, guiTop);
 		
-		mc.getTextureManager().bindTexture(furnace);
-		drawTexturedModalRect(guiLeft + 25, guiTop + 33, 56, 36, 14, 14);
+		UtilsFX.bindTexture("textures/gui/def_widgets.png");
+		
+		int col = GuiTheme.CURRENT_THEME.slotColor;
+		GL11.glColor4f(ColorHelper.getRed(col), ColorHelper.getGreen(col), ColorHelper.getBlue(col), 1);
+		RenderUtil.drawTexturedModalRect(guiLeft + 26.5, guiTop + 34, 43, 0, 13, 13);
 		
 		if(tile.totalBurnTicks != 0)
 		{
 			double fire = (double) tile.burnTicks / tile.totalBurnTicks * 14;
-			RenderUtil.drawTexturedModalRect(guiLeft + 25, guiTop + 47 - fire, 176, 14 - fire, 14, fire);
+			GL11.glColor4f(1, 1, 1, 1);
+			RenderUtil.drawTexturedModalRect(guiLeft + 25, guiTop + 47 - fire, 0, 14 - fire, 14, fire);
 		}
 		
-		mc.getTextureManager().bindTexture(widgets);
-		
 		double power = tile.storage.getStoredQF(null) / tile.storage.getQFCapacity(null) * 64;
-		RenderUtil.drawTexturedModalRect(guiLeft + 6, guiTop + 72 - power, 0, 81 - power, 64, power);
+		int finalCol = InterpolationUtil.interpolate(0xFF803400, 0xFFFE6A00, (float) power / 64F);
+		RenderUtil.drawGradientRect(guiLeft + 7, guiTop + 72 - power, 11, power, finalCol, 0xFF803400);
 	}
+	
+	private static final DecimalFormat df = new DecimalFormat("#0");
 	
 	@Override
 	public void drawScreen(int mx, int my, float p_drawScreen_3_)
@@ -75,12 +90,6 @@ public class GuiPoweredQuarry extends GuiContainer
 		GlStateManager.enableAlpha();
 		GlStateManager.enableBlend();
 		if(mx - guiLeft >= 6 && my - guiTop >= 7 && mx - guiLeft <= 19 && my - guiTop <= 73)
-			drawHoveringText(Arrays.asList(new DecimalFormat("#0").format(tile.storage.getStoredQF(null) / (UniversalConverter.FT_QF(TileEntityFurnace.getItemBurnTime(ClientProxy.COAL)) / ConfigsSQ.BLOCKS_PER_COAL)) + " " + I18n.format("info.simplequarry:blockstobreak")), guiLeft + 16, guiTop + 48);
-	}
-	
-	@Override
-	protected void mouseClicked(int mx, int my, int mouseButton) throws IOException
-	{
-		super.mouseClicked(mx, my, mouseButton);
+			drawHoveringText(Arrays.asList(df.format(tile.storage.getStoredQF(null) / (UniversalConverter.FT_QF(TileEntityFurnace.getItemBurnTime(ClientProxy.COAL)) / ConfigsSQ.BLOCKS_PER_COAL)) + " " + I18n.format("info.simplequarry:blockstobreak")), guiLeft + 16, guiTop + 48);
 	}
 }

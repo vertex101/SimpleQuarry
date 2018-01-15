@@ -7,14 +7,14 @@ import org.lwjgl.opengl.GL11;
 import com.endie.simplequarry.InfoSQ;
 import com.endie.simplequarry.gui.c.ContainerUnification;
 import com.endie.simplequarry.init.ItemsSQ;
+import com.pengu.hammercore.client.texture.gui.DynGuiTex;
+import com.pengu.hammercore.client.texture.gui.GuiTexBakery;
+import com.pengu.hammercore.client.texture.gui.theme.GuiTheme;
 import com.pengu.hammercore.client.utils.UtilsFX;
+import com.pengu.hammercore.utils.ColorHelper;
 
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -26,6 +26,19 @@ public class GuiUnification extends GuiContainer
 		super(new ContainerUnification(player, player.getHeldItem(hand)));
 		xSize = 176;
 		ySize = 166;
+	}
+	
+	public DynGuiTex tex;
+	
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+		
+		GuiTexBakery bake = GuiTexBakery.start().body(0, 0, xSize, ySize);
+		for(Slot slot : inventorySlots.inventorySlots)
+			bake.slot(slot.xPos - 1, slot.yPos - 1);
+		tex = bake.bake();
 	}
 	
 	@Override
@@ -44,12 +57,13 @@ public class GuiUnification extends GuiContainer
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
 	{
-		UtilsFX.bindTexture(InfoSQ.MOD_ID, "textures/gui/gui_unification.png");
-		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		tex.render(guiLeft, guiTop);
 		
-		for(Slot slot : inventorySlots.inventorySlots)
-			if(slot.inventory instanceof InventoryPlayer)
-				drawTexturedModalRect(guiLeft - 1 + slot.xPos, guiTop - 1 + slot.yPos, xSize, 0, 18, 18);
+		int col = GuiTheme.CURRENT_THEME.bodyLayerLU;
+		GL11.glColor4f(ColorHelper.getRed(col), ColorHelper.getGreen(col), ColorHelper.getBlue(col), .5F);
+		GL11.glEnable(GL11.GL_BLEND);
+		UtilsFX.bindTexture(InfoSQ.MOD_ID, "textures/gui/widgets.png");
+		drawTexturedModalRect(guiLeft + 81, guiTop + 50, 32, 0, 14, 14);
 	}
 	
 	@Override

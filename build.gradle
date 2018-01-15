@@ -92,20 +92,6 @@ task srcJar(type: Jar, dependsOn: classes) {
     }
 }
 
-task signJar(type: SignJar, dependsOn: reobfJar) {
-    onlyIf {
-        project.hasProperty('keyStore')
-    }
-    keyStore = project.findProperty('keyStore')
-    alias = project.findProperty('keyStoreAlias')
-    storePass = project.findProperty('keyStorePass')
-    keyPass = project.findProperty('keyStoreKeyPass')
-    inputFile = jar.archivePath
-    outputFile = jar.archivePath
-}
-
-build.dependsOn signJar
-
 jar {
 	manifest {
 		attributes 'FMLAT': "${config.mod_id}_at.cfg"
@@ -122,7 +108,7 @@ curseforge {
 	project {
 		id = "${config.cf_project}"
 		changelogType = 'html'
-		changelog = ""
+		changelog = file('changelog.html')
 		releaseType = "${config.release_type}"
 		addGameVersion "${config.minecraft_version}"
 		mainArtifact(jar) {
@@ -138,4 +124,71 @@ curseforge {
             requiredLibrary 'Hammer-Core'
         }
 	}
+}
+
+task signJar(type: SignJar, dependsOn: reobfJar) {
+    onlyIf {
+        project.hasProperty('keyStore')
+    }
+    keyStore = project.findProperty('keyStore')
+    alias = project.findProperty('keyStoreAlias')
+    storePass = project.findProperty('keyStorePass')
+    keyPass = project.findProperty('keyStoreKeyPass')
+    inputFile = jar.archivePath
+    outputFile = jar.archivePath
+}
+
+task signDeobfJar(type: SignJar, dependsOn: deobfJar) {
+    onlyIf {
+        project.hasProperty('keyStore')
+    }
+    keyStore = project.findProperty('keyStore')
+    alias = project.findProperty('keyStoreAlias')
+    storePass = project.findProperty('keyStorePass')
+    keyPass = project.findProperty('keyStoreKeyPass')
+    inputFile = deobfJar.archivePath
+    outputFile = deobfJar.archivePath
+}
+
+task signSrcJar(type: SignJar, dependsOn: srcJar) {
+    onlyIf {
+        project.hasProperty('keyStore')
+    }
+    keyStore = project.findProperty('keyStore')
+    alias = project.findProperty('keyStoreAlias')
+    storePass = project.findProperty('keyStorePass')
+    keyPass = project.findProperty('keyStoreKeyPass')
+    inputFile = srcJar.archivePath
+    outputFile = srcJar.archivePath
+}
+
+task makeChangelog(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
+    file = new File("changelog.html")
+    untaggedName = "Version ${project.version}"
+    fromCommit = startGitRev
+    toRef =  "HEAD"
+    gitHubIssuePattern = "nonada123";
+    templateContent = """
+{{#tags}}
+<h1>Changes:</h1>
+  <ul>
+    {{#commits}}
+    <li> <a href="https://github.com/${config.mod_id_fancy}/Sources/commit/{{hash}}" target=_blank> {{{message}}}</a>
+</li>
+    {{/commits}}
+  </ul>
+{{/tags}}
+"""
+}
+
+build.dependsOn signJar
+build.dependsOn signDeobfJar
+build.dependsOn signSrcJar
+tasks.build.dependsOn makeChangelog
+
+afterEvaluate {
+	tasks["curseforge${config.cf_project}"].dependsOn.add(signJar)
+	tasks["curseforge${config.cf_project}"].dependsOn.add(signDeobfJar)
+	tasks["curseforge${config.cf_project}"].dependsOn.add(signSrcJar)
+	tasks["curseforge${config.cf_project}"].dependsOn.add(makeChangelog)
 }

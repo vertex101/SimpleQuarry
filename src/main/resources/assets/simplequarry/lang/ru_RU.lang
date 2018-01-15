@@ -20,7 +20,9 @@ item.simplequarry:upgrade_efficiency_2.name=Апгрейд: Эффективно
 item.simplequarry:upgrade_efficiency_2.tooltip0=Требует предыдущий уровень эффективности.
 item.simplequarry:upgrade_efficiency_3.name=Апгрейд: Эффективность III
 item.simplequarry:upgrade_efficiency_3.tooltip0=Требует предыдущий уровень эффективности.
-
+item.simplequarry:upgrade_filler.name=Апгрейд: Заполнение
+item.simplequarry:upgrade_filler.tooltip0=Заполняет область карьера каменистой землей
+item.simplequarry:upgrade_filler.tooltip1=после того, как карьер закончил добычу.
 item.simplequarry:upgrade_filter.name=Апгрейд: фильтр
 item.simplequarry:upgrade_filter.tooltip0=Имеет интерфейс; Позволяет указать, что
 item.simplequarry:upgrade_filter.tooltip1=должен подбирать карьер.
