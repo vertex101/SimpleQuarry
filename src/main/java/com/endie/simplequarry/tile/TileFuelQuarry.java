@@ -14,18 +14,19 @@ import com.endie.simplequarry.cfg.ConfigsSQ;
 import com.endie.simplequarry.gui.c.ContainerFuelQuarry;
 import com.endie.simplequarry.gui.g.GuiFuelQuarry;
 import com.endie.simplequarry.init.BlocksSQ;
+import com.endie.simplequarry.net.PacketBlock;
 import com.endie.simplequarry.proxy.CommonProxy;
 import com.endie.simplequarry.utils.InvUts;
 import com.endie.simplequarry.vortex.QuarryVortex;
 import com.pengu.hammercore.common.iWrenchable;
 import com.pengu.hammercore.common.inventory.InventoryDummy;
 import com.pengu.hammercore.common.utils.WorldUtil;
+import com.pengu.hammercore.net.HCNetwork;
 import com.pengu.hammercore.tile.TileSyncableTickable;
 import com.pengu.hammercore.tile.iTileDroppable;
 import com.pengu.hammercore.utils.WorldLocation;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -34,7 +35,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -76,7 +76,7 @@ public class TileFuelQuarry extends TileSyncableTickable implements IQFConsumer,
 		if(world.isRemote)
 		{
 			if(boundingBox == null || boundingBox.minY != (double) y)
-				boundingBox = new AxisAlignedBB((double) (chunkX * 16), (double) y, (double) (chunkZ * 16), (double) (chunkX * 16 + 16), (double) pos.getY(), (double) (chunkZ * 16 + 16));
+				boundingBox = new AxisAlignedBB(chunkX * 16, y, chunkZ * 16, chunkX * 16 + 16, pos.getY(), chunkZ * 16 + 16);
 			if(vortex == null)
 				vortex = new QuarryVortex(this);
 			SimpleQuarry.proxy.addParticleVortex(vortex);
@@ -90,7 +90,7 @@ public class TileFuelQuarry extends TileSyncableTickable implements IQFConsumer,
 		if(y == -1)
 		{
 			y = pos.getY() - 1;
-			boundingBox = new AxisAlignedBB((double) (chunkX * 16), (double) y, (double) (chunkZ * 16), (double) (chunkX * 16 + 16), (double) (y + 1), (double) (chunkZ * 16 + 16));
+			boundingBox = new AxisAlignedBB(chunkX * 16, y, chunkZ * 16, chunkX * 16 + 16, y + 1, chunkZ * 16 + 16);
 			sendChangesToNearby();
 		}
 		if(storage.storedQF > 0.0)
@@ -99,7 +99,7 @@ public class TileFuelQuarry extends TileSyncableTickable implements IQFConsumer,
 			if(cpos != null && cpos.toLong() != pos.toLong() && world.getTileEntity(cpos) instanceof TileFuelQuarry)
 			{
 				loc.destroyBlock(true);
-				world.createExplosion(null, (double) pos.getX(), (double) pos.getY(), (double) pos.getZ(), 3.0f, true);
+				world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 3, true);
 				return;
 			}
 			chunks.put("" + chunkX + "|" + chunkZ, pos);
@@ -108,13 +108,13 @@ public class TileFuelQuarry extends TileSyncableTickable implements IQFConsumer,
 		
 		if(state0.getBlock() == BlocksSQ.fuel_quarry && state0.getValue(BlockFuelQuarry.IS_MINING) && y < 1)
 		{
-			world.setBlockState(pos, state0.withProperty((IProperty) BlockFuelQuarry.IS_MINING, (Comparable) Boolean.valueOf(false)));
-			world.setTileEntity(pos, (TileEntity) this);
+			world.setBlockState(pos, state0.withProperty(BlockFuelQuarry.IS_MINING, false));
+			world.setTileEntity(pos, create(world, serializeNBT()));
 		}
 		
 		double QFPerBlock = UniversalConverter.FT_QF(TileEntityFurnace.getItemBurnTime(CommonProxy.COAL)) / (double) ConfigsSQ.BLOCKS_PER_COAL;
 		
-		if(storage.consumeQF(null, UniversalConverter.FT_QF(1.0), true) == UniversalConverter.FT_QF(1.0) && state0.getValue(BlockFuelQuarry.IS_MINING) && !world.isRemote && atTickRate(20) && burnTicks < 1 && !(stack = inv.getStackInSlot(0)).isEmpty() && TileEntityFurnace.getItemBurnTime(stack) > 0)
+		if(storage.consumeQF(null, UniversalConverter.FT_QF(1), true) == UniversalConverter.FT_QF(1) && state0.getValue(BlockFuelQuarry.IS_MINING) && !world.isRemote && atTickRate(20) && burnTicks < 1 && !(stack = inv.getStackInSlot(0)).isEmpty() && TileEntityFurnace.getItemBurnTime(stack) > 0)
 		{
 			burnTicks += TileEntityFurnace.getItemBurnTime(stack);
 			totalBurnTicks = burnTicks;
@@ -152,7 +152,7 @@ public class TileFuelQuarry extends TileSyncableTickable implements IQFConsumer,
 						continue;
 					captureItems(makeDrops(pos, state));
 					hasBrokenBlock = true;
-					world.destroyBlock(pos, false);
+					breakBlock(pos, state);
 					storage.produceQF(null, QFPerBlock, false);
 					sendChangesToNearby();
 					break block0;
@@ -163,6 +163,13 @@ public class TileFuelQuarry extends TileSyncableTickable implements IQFConsumer,
 		}
 		captureEntityItems(world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB((double) (chunkX * 16), (double) y, (double) (chunkZ * 16), (double) (chunkX * 16 + 16), (double) pos.getY(), (double) (chunkZ * 16 + 16))));
 		tryEject();
+	}
+	
+	public void breakBlock(BlockPos pos, IBlockState state)
+	{
+		world.setBlockToAir(pos);
+		if(state != null)
+			HCNetwork.manager.sendToAllAround(new PacketBlock(pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, state), getSyncPoint(128));
 	}
 	
 	public NonNullList<ItemStack> makeDrops(BlockPos pos, IBlockState state)
@@ -343,5 +350,7 @@ public class TileFuelQuarry extends TileSyncableTickable implements IQFConsumer,
 		for(ItemStack stack : queueItems)
 			dropStack(stack);
 		queueItems.clear();
+		if(this instanceof TilePoweredQuarry)
+			((TilePoweredQuarry) this).invUpgrades.drop(world, pos);
 	}
 }

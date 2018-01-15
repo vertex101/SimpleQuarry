@@ -26,6 +26,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 public class TilePoweredQuarry extends TileFuelQuarry implements IEnergyStorage, iPowerStorage
 {
 	public InventoryDummy invUpgrades = new InventoryDummy(5);
+	public NBTTagCompound additionalTags = new NBTTagCompound();
 	
 	public TilePoweredQuarry()
 	{
@@ -75,14 +76,14 @@ public class TilePoweredQuarry extends TileFuelQuarry implements IEnergyStorage,
 		{
 			iPowerContainerItem pc = (iPowerContainerItem) stack.getItem();
 			int canExtract = pc.extractEnergy(stack, pc.getEnergyStored(stack), true);
-			canExtract = Math.min(this.receiveEnergy(canExtract, true), canExtract);
+			canExtract = Math.min(receiveEnergy(canExtract, true), canExtract);
 			pc.extractEnergy(stack, canExtract, false);
 			receiveEnergy(canExtract, false);
 		} else if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
 		{
 			IEnergyStorage pc = stack.getCapability(CapabilityEnergy.ENERGY, null);
 			int canExtract = pc.extractEnergy(pc.getEnergyStored(), true);
-			canExtract = Math.min(this.receiveEnergy(canExtract, true), canExtract);
+			canExtract = Math.min(receiveEnergy(canExtract, true), canExtract);
 			pc.extractEnergy(canExtract, false);
 			receiveEnergy(canExtract, false);
 		}
@@ -95,7 +96,8 @@ public class TilePoweredQuarry extends TileFuelQuarry implements IEnergyStorage,
 				ItemStack s = invUpgrades.getStackInSlot(i).copy();
 				invUpgrades.setInventorySlotContents(i, ItemStack.EMPTY);
 				queueItems.add(s);
-			}
+			} else if(up != null)
+				up.tick(this, i);
 		}
 		
 		super.tick();
@@ -104,9 +106,17 @@ public class TilePoweredQuarry extends TileFuelQuarry implements IEnergyStorage,
 		
 		if(!world.isRemote && state0.getBlock() == BlocksSQ.powered_quarry && state0.getValue(BlockFuelQuarry.IS_MINING) && y < 1)
 		{
-			this.world.setBlockState(pos, state0.withProperty(BlockFuelQuarry.IS_MINING, false));
-			this.world.setTileEntity(pos, this);
+			world.setBlockState(pos, state0.withProperty(BlockFuelQuarry.IS_MINING, false));
+			world.setTileEntity(pos, create(world, serializeNBT()));
 		}
+	}
+	
+	public boolean isDone()
+	{
+		IBlockState state0 = world.getBlockState(pos);
+		if(!world.isRemote && state0.getBlock() == BlocksSQ.powered_quarry)
+			return !state0.getValue(BlockFuelQuarry.IS_MINING);
+		return false;
 	}
 	
 	public int getFortune()
@@ -137,11 +147,19 @@ public class TilePoweredQuarry extends TileFuelQuarry implements IEnergyStorage,
 	@Override
 	public void addQueueItem(ItemStack e)
 	{
+		if(e.isEmpty())
+			return;
+		
 		for(int i = 0; i < 5; ++i)
 		{
 			ItemUpgrade up = getUpgrade(i);
 			if(up != null)
-				e = up.handlePickup(e, this, i);
+				try
+				{
+					e = up.handlePickup(e, this, i);
+				} catch(Throwable err)
+				{
+				}
 		}
 		
 		if(!e.isEmpty())
@@ -152,7 +170,8 @@ public class TilePoweredQuarry extends TileFuelQuarry implements IEnergyStorage,
 	public void readNBT(NBTTagCompound nbt)
 	{
 		super.readNBT(nbt);
-		this.invUpgrades.readFromNBT(nbt.getCompoundTag("InventoryUpgrades"));
+		invUpgrades.readFromNBT(nbt.getCompoundTag("InventoryUpgrades"));
+		additionalTags = nbt.getCompoundTag("AdditionalTags");
 	}
 	
 	@Override
@@ -160,6 +179,7 @@ public class TilePoweredQuarry extends TileFuelQuarry implements IEnergyStorage,
 	{
 		super.writeNBT(nbt);
 		nbt.setTag("InventoryUpgrades", invUpgrades.writeToNBT(new NBTTagCompound()));
+		nbt.setTag("AdditionalTags", additionalTags);
 	}
 	
 	@Override
@@ -178,7 +198,7 @@ public class TilePoweredQuarry extends TileFuelQuarry implements IEnergyStorage,
 	public int receiveEnergy(int maxReceive, boolean simulate)
 	{
 		if(maxReceive >= 200)
-			this.storage.consumeQF(null, maxReceive / 200, simulate);
+			storage.consumeQF(null, maxReceive / 200, simulate);
 		return maxReceive;
 	}
 	

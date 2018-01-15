@@ -46,6 +46,7 @@ public class RecipesSQ
 		shaped(ItemsSQ.UPGRADE_EFFICIENCY1, "iri", "rur", "iri", 'i', "ingotIron", 'r', "blockRedstone", 'u', ItemsSQ.UPGRADE_BASE);
 		shaped(ItemsSQ.UPGRADE_EFFICIENCY2, "ibi", "rur", "ibi", 'i', "ingotGold", 'r', "blockRedstone", 'u', ItemsSQ.UPGRADE_BASE, 'b', ItemsHC.battery);
 		shaped(ItemsSQ.UPGRADE_EFFICIENCY3, "ibi", "bub", "ibi", 'i', "gemDiamond", 'u', ItemsSQ.UPGRADE_BASE, 'b', ItemsHC.battery);
+		shaped(ItemsSQ.UPGRADE_FILLER, "mdm", "dud", "mdm", 'm', Items.DIAMOND_SHOVEL, 'd', Blocks.GRASS, 'u', ItemsSQ.UPGRADE_BASE);
 		
 		if(ConfigsSQ.POWERED_QUARRY_RECIPE == 0)
 			shaped(new ItemStack(BlocksSQ.powered_quarry), "ehe", "dqd", "ece", 'c', "chestWood", 'q', BlocksSQ.fuel_quarry, 'h', Blocks.HOPPER, 'e', Items.ENDER_EYE, 'd', Items.DIAMOND_PICKAXE);
