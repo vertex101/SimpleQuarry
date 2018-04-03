@@ -161,8 +161,14 @@ public class TileFuelQuarry extends TileSyncableTickable implements IQFConsumer,
 			if(!hasBrokenBlock)
 				--y;
 		}
-		captureEntityItems(world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB((double) (chunkX * 16), (double) y, (double) (chunkZ * 16), (double) (chunkX * 16 + 16), (double) pos.getY(), (double) (chunkZ * 16 + 16))));
+		if(isMining(state0))
+			captureEntityItems(world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB((double) (chunkX * 16), (double) y, (double) (chunkZ * 16), (double) (chunkX * 16 + 16), (double) pos.getY(), (double) (chunkZ * 16 + 16))));
 		tryEject();
+	}
+	
+	public boolean isMining(IBlockState state)
+	{
+		return state.getBlock() == BlocksSQ.fuel_quarry && state.getValue(BlockFuelQuarry.IS_MINING) && y < 1 && storage.storedQF > 0;
 	}
 	
 	public void breakBlock(BlockPos pos, IBlockState state)

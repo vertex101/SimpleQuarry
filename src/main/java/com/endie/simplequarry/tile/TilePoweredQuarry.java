@@ -119,6 +119,12 @@ public class TilePoweredQuarry extends TileFuelQuarry implements IEnergyStorage,
 		return false;
 	}
 	
+	@Override
+	public boolean isMining(IBlockState state)
+	{
+		return state.getBlock() == BlocksSQ.powered_quarry && state.getValue(BlockFuelQuarry.IS_MINING) && y < 1 && storage.storedQF > 0;
+	}
+	
 	public int getFortune()
 	{
 		int fortune = 0;
