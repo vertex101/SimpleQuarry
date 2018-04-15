@@ -8,7 +8,6 @@ import com.endie.simplequarry.cfg.ConfigsSQ;
 import com.endie.simplequarry.init.BlocksSQ;
 import com.endie.simplequarry.init.GuisSQ;
 import com.endie.simplequarry.init.ItemsSQ;
-import com.endie.simplequarry.init.RecipesSQ;
 import com.endie.simplequarry.proxy.CommonProxy;
 import com.pengu.hammercore.common.SimpleRegistration;
 import com.pengu.hammercore.common.utils.HammerCoreUtils;
@@ -20,10 +19,8 @@ import com.pengu.hammercore.var.types.VariableString;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -36,8 +33,6 @@ import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod(modid = InfoSQ.MOD_ID, name = InfoSQ.MOD_NAME, version = InfoSQ.MOD_VERSION, dependencies = "required-after:hammercore", guiFactory = "com.endie.simplequarry.cfg.ConfigFactorySQ", certificateFingerprint = "4d7b29cd19124e986da685107d16ce4b49bc0a97")
 public class SimpleQuarry
@@ -128,16 +123,6 @@ public class SimpleQuarry
 	public void serverStopped(FMLServerStoppedEvent e)
 	{
 		proxy.serverStopped();
-	}
-	
-	@SubscribeEvent
-	public void addRecipes(RegistryEvent.Register<IRecipe> reg)
-	{
-		IForgeRegistry<IRecipe> fr = reg.getRegistry();
-		RecipesSQ.collect() //
-		        .stream() //
-		        .filter(r -> r != null) //
-		        .forEach(fr::register);
 	}
 	
 	static

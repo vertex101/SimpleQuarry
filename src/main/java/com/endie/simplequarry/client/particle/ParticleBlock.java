@@ -25,12 +25,19 @@ public class ParticleBlock extends SimpleParticle
 		particleMaxAge = 250;
 		this.state = state;
 		pos = new BlockPos(posXIn, posYIn, posZIn);
+		canCollide = false;
 	}
 	
 	@Override
 	public int getBrightnessForRender(float pt)
 	{
-		return 230;
+		try
+		{
+			return super.getBrightnessForRender(pt);
+		} catch(Throwable err)
+		{
+			return 230;
+		}
 	}
 	
 	@Override

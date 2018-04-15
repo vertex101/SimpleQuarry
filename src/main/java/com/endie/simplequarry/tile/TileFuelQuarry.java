@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Random;
 
 import com.endie.simplequarry.SimpleQuarry;
+import com.endie.simplequarry.api.ItemInjector;
 import com.endie.simplequarry.api.energy.IQFConsumer;
 import com.endie.simplequarry.api.energy.QFStorage;
 import com.endie.simplequarry.api.energy.UniversalConverter;
@@ -16,7 +17,6 @@ import com.endie.simplequarry.gui.g.GuiFuelQuarry;
 import com.endie.simplequarry.init.BlocksSQ;
 import com.endie.simplequarry.net.PacketBlock;
 import com.endie.simplequarry.proxy.CommonProxy;
-import com.endie.simplequarry.utils.InvUts;
 import com.endie.simplequarry.vortex.QuarryVortex;
 import com.pengu.hammercore.common.iWrenchable;
 import com.pengu.hammercore.common.inventory.InventoryDummy;
@@ -32,7 +32,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -109,10 +108,12 @@ public class TileFuelQuarry extends TileSyncableTickable implements IQFConsumer,
 		if(state0.getBlock() == BlocksSQ.fuel_quarry && state0.getValue(BlockFuelQuarry.IS_MINING) && y < 1)
 		{
 			world.setBlockState(pos, state0.withProperty(BlockFuelQuarry.IS_MINING, false));
-			world.setTileEntity(pos, create(world, serializeNBT()));
+			validate();
+			world.setTileEntity(pos, this);
 		}
 		
 		double QFPerBlock = UniversalConverter.FT_QF(TileEntityFurnace.getItemBurnTime(CommonProxy.COAL)) / (double) ConfigsSQ.BLOCKS_PER_COAL;
+		QFPerBlock *= getUsageMult();
 		
 		if(storage.consumeQF(null, UniversalConverter.FT_QF(1), true) == UniversalConverter.FT_QF(1) && state0.getValue(BlockFuelQuarry.IS_MINING) && !world.isRemote && atTickRate(20) && burnTicks < 1 && !(stack = inv.getStackInSlot(0)).isEmpty() && TileEntityFurnace.getItemBurnTime(stack) > 0)
 		{
@@ -126,10 +127,9 @@ public class TileFuelQuarry extends TileSyncableTickable implements IQFConsumer,
 		{
 			--burnTicks;
 			
-			float mult = getUsageMult();
-			
-			double qf2 = storage.consumeQF(null, UniversalConverter.FT_QF(1 / mult), true);
-			if(qf2 == UniversalConverter.FT_QF(1 / mult))
+			double ftqf = UniversalConverter.FT_QF(1);
+			double qf2 = storage.consumeQF(null, ftqf, true);
+			if(qf2 == ftqf)
 				storage.consumeQF(null, qf2, false);
 			
 			sendChangesToNearby();
@@ -210,38 +210,26 @@ public class TileFuelQuarry extends TileSyncableTickable implements IQFConsumer,
 	
 	public void tryEject()
 	{
-		if(!queueItems.isEmpty())
+		while(!queueItems.isEmpty())
 		{
-			block0: for(int i = 0; i < queueItems.size(); ++i)
+			if(((ItemStack) queueItems.get(0)).isEmpty())
 			{
-				if(((ItemStack) queueItems.get(i)).isEmpty())
-				{
-					queueItems.remove(i);
-					i = 0;
-					continue;
-				}
-				ItemStack stack = (ItemStack) queueItems.get(i);
-				boolean facePut = false;
-				for(EnumFacing face : EnumFacing.VALUES)
-				{
-					int slot;
-					IInventory inv;
-					TileEntity tile;
-					if(face == EnumFacing.DOWN || (inv = (IInventory) WorldUtil.cast((Object) (tile = world.getTileEntity(pos.offset(face))), IInventory.class)) == null || (slot = InvUts.queryItemOrEmptySlot(inv, stack, true, face.getOpposite())) == -1)
-						continue;
-					InvUts.putItem(inv, slot, stack);
-					facePut = true;
-					if(!stack.isEmpty())
-						continue;
-					queueItems.remove(i);
-					i = 0;
-					continue block0;
-				}
-				if(facePut || stack.isEmpty())
-					continue;
-				dropStack(stack);
-				queueItems.remove(i);
+				queueItems.remove(0);
+				continue;
 			}
+			
+			ItemStack stack = (ItemStack) queueItems.remove(0);
+			
+			for(EnumFacing face : EnumFacing.VALUES)
+			{
+				TileEntity tile = world.getTileEntity(pos.offset(face));
+				stack = ItemInjector.inject(stack, tile, face.getOpposite());
+				if(stack.isEmpty())
+					break;
+			}
+			
+			if(!stack.isEmpty())
+				dropStack(stack);
 		}
 	}
 	

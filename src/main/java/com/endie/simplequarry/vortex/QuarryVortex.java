@@ -56,12 +56,12 @@ public class QuarryVortex extends Vortex
 		for(i = 0; i < particles.size(); ++i)
 		{
 			p = particles.get(i);
-			mx = ParticleProxy_Client.getParticleMotionX(p);
-			my = ParticleProxy_Client.getParticleMotionY(p);
-			mz = ParticleProxy_Client.getParticleMotionZ(p);
-			px = ParticleProxy_Client.getParticlePosX(p);
-			py = ParticleProxy_Client.getParticlePosY(p);
-			pz = ParticleProxy_Client.getParticlePosZ(p);
+			mx = p.motionX;
+			my = p.motionY;
+			mz = p.motionZ;
+			px = p.posX;
+			py = p.posY;
+			pz = p.posZ;
 			double dx = px - this.x;
 			double dy = py - this.y;
 			double dz = pz - this.z;
@@ -71,23 +71,23 @@ public class QuarryVortex extends Vortex
 			mx = MathHelper.clip((this.x - px), -1.0, 1.0) / (8.0 / distX);
 			my = MathHelper.clip((this.y - py - .7), -1.0, 1.0) / (8.0 / distY);
 			mz = MathHelper.clip((this.z - pz), -1.0, 1.0) / (8.0 / distZ);
-			ParticleProxy_Client.setParticleMotionX(p, mx);
-			ParticleProxy_Client.setParticleMotionY(p, my);
-			ParticleProxy_Client.setParticleMotionZ(p, mz);
+			p.motionX = mx;
+			p.motionY = my;
+			p.motionZ = mz;
 		}
 		particles = ParticleList.getParticlesWithinAABB(new AxisAlignedBB(pos.down()));
 		for(i = 0; i < particles.size(); ++i)
 		{
 			p = particles.get(i);
-			mx = ParticleProxy_Client.getParticleMotionX(p);
-			my = ParticleProxy_Client.getParticleMotionY(p);
-			mz = ParticleProxy_Client.getParticleMotionZ(p);
-			px = ParticleProxy_Client.getParticlePosX(p);
-			py = ParticleProxy_Client.getParticlePosY(p);
-			pz = ParticleProxy_Client.getParticlePosZ(p);
-			mx = MathHelper.clip(x - px, -1.0, 1.0) / 8.0;
-			my = MathHelper.clip(y - py + 1.0, -1.0, 1.0) / 8.0;
-			mz = MathHelper.clip(z - pz, -1.0, 1.0) / 8.0;
+			mx = p.motionX;
+			my = p.motionY;
+			mz = p.motionZ;
+			px = p.posX;
+			py = p.posY;
+			pz = p.posZ;
+			mx = MathHelper.clip(x - px, -1.0, 1.0) / 4.0;
+			my = MathHelper.clip(y - py, -1.0, 1.0) / 32.0;
+			mz = MathHelper.clip(z - pz, -1.0, 1.0) / 4.0;
 			p.motionX = mx;
 			p.motionY = my;
 			p.motionZ = mz;
@@ -95,10 +95,16 @@ public class QuarryVortex extends Vortex
 			if(p instanceof ParticleBlock)
 			{
 				ParticleBlock pb = (ParticleBlock) p;
-				pb.particleAge += 10;
+				pb.particleAge += 8;
 				if(pb.particleAge >= pb.particleMaxAge)
 					pb.setExpired();
 			}
+		}
+		particles = ParticleList.getParticlesWithinAABB(new AxisAlignedBB(pos.getX(), pos.getY() + .5, pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1));
+		for(i = 0; i < particles.size(); ++i)
+		{
+			p = particles.get(i);
+			p.setExpired();
 		}
 	}
 	

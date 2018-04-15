@@ -107,7 +107,8 @@ public class TilePoweredQuarry extends TileFuelQuarry implements IEnergyStorage,
 		if(!world.isRemote && state0.getBlock() == BlocksSQ.powered_quarry && state0.getValue(BlockFuelQuarry.IS_MINING) && y < 1)
 		{
 			world.setBlockState(pos, state0.withProperty(BlockFuelQuarry.IS_MINING, false));
-			world.setTileEntity(pos, create(world, serializeNBT()));
+			validate();
+			world.setTileEntity(pos, this);
 		}
 	}
 	

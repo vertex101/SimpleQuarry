@@ -25,11 +25,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import static com.endie.simplequarry.blocks.BlockFuelQuarry.IS_MINING;
 
 public class BlockPoweredQuarry extends Block implements ITileEntityProvider, iTileBlock<TilePoweredQuarry>
 {
-	public static final PropertyBool IS_MINING = PropertyBool.create("mining");
-	
 	public BlockPoweredQuarry()
 	{
 		super(Material.ROCK);

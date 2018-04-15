@@ -5,13 +5,13 @@ author=APengu
 forge_version=14.23.0.2529
 minecraft_version=1.12.2
 mcp=snapshot_20170624
-hc_version=1.9.7.0
+hc_version=1.9.9.1
 jei_version=4.8.5.138
 
 #Mod info
 mod_id=simplequarry
 mod_id_fancy=SimpleQuarry
 mod_name=Simple Quarry
-mod_version=12r
+mod_version=13r
 cf_project=247393
 release_type=release
