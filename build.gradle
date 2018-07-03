@@ -172,7 +172,7 @@ task signSrcJar(type: SignJar, dependsOn: srcJar) {
 task makeChangelog(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
     file = new File("changelog.html")
     untaggedName = "Version ${project.version}"
-    fromCommit = startGitRev
+    fromCommit = "${config.start_git_rev}"
     toRef =  "HEAD"
     gitHubIssuePattern = "nonada123";
     templateContent = """
@@ -180,7 +180,7 @@ task makeChangelog(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
 <h1>Changes:</h1>
   <ul>
     {{#commits}}
-    <li> <a href="https://github.com/${config.mod_id_fancy}/Sources/commit/{{hash}}" target=_blank> {{{message}}}</a>
+    <li> <a href="https://gitlab.com/DragonForge/SimpleQuarry/commit/{{hash}}" target=_blank> {{{message}}}</a>
 </li>
     {{/commits}}
   </ul>

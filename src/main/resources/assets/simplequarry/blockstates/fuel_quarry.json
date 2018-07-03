@@ -1,12 +1,12 @@
 {
     "variants": {
-        "facing=north,mining=true": { "model": "simplequarry:fuel_quarry" },
-        "facing=south,mining=true": { "model": "simplequarry:fuel_quarry", "y": 180 },
-        "facing=west,mining=true":  { "model": "simplequarry:fuel_quarry", "y": 270 },
-        "facing=east,mining=true":  { "model": "simplequarry:fuel_quarry", "y": 90 },
-		"facing=north,mining=false": { "model": "simplequarry:fuel_quarry_done" },
-        "facing=south,mining=false": { "model": "simplequarry:fuel_quarry_done", "y": 180 },
-        "facing=west,mining=false":  { "model": "simplequarry:fuel_quarry_done", "y": 270 },
-        "facing=east,mining=false":  { "model": "simplequarry:fuel_quarry_done", "y": 90 }
+        "enabled=true,facing=north": { "model": "simplequarry:fuel_quarry" },
+        "enabled=true,facing=south": { "model": "simplequarry:fuel_quarry", "y": 180 },
+        "enabled=true,facing=west":  { "model": "simplequarry:fuel_quarry", "y": 270 },
+        "enabled=true,facing=east":  { "model": "simplequarry:fuel_quarry", "y": 90 },
+        "enabled=false,facing=north": { "model": "simplequarry:fuel_quarry_done" },
+        "enabled=false,facing=south": { "model": "simplequarry:fuel_quarry_done", "y": 180 },
+        "enabled=false,facing=west":  { "model": "simplequarry:fuel_quarry_done", "y": 270 },
+        "enabled=false,facing=east":  { "model": "simplequarry:fuel_quarry_done", "y": 90 }
     }
 }
