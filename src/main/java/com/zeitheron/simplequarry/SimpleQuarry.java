@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.zeitheron.hammercore.HammerCore;
 import com.zeitheron.hammercore.intent.IntentManager;
 import com.zeitheron.hammercore.internal.SimpleRegistration;
@@ -11,7 +14,6 @@ import com.zeitheron.hammercore.internal.variables.IVariable;
 import com.zeitheron.hammercore.internal.variables.VariableManager;
 import com.zeitheron.hammercore.internal.variables.types.VariableString;
 import com.zeitheron.hammercore.utils.HammerCoreUtils;
-import com.zeitheron.hammercore.utils.WrappedLog;
 import com.zeitheron.simplequarry.cfg.ConfigsSQ;
 import com.zeitheron.simplequarry.init.BlocksSQ;
 import com.zeitheron.simplequarry.init.GuisSQ;
@@ -49,7 +51,7 @@ public class SimpleQuarry
 	public static NBTTagCompound sync_configs_nbt;
 	public static CreativeTabs tab;
 	public static final Set<IBlockState> QUARRY_BLACKLIST;
-	public static WrappedLog LOG = new WrappedLog(InfoSQ.MOD_NAME);
+	public static Logger LOG = LogManager.getLogger(InfoSQ.MOD_ID);
 	
 	@EventHandler
 	public void certificateViolation(FMLFingerprintViolationEvent e)
@@ -65,7 +67,7 @@ public class SimpleQuarry
 	@EventHandler
 	public void construct(FMLConstructionEvent e)
 	{
-		IntentManager.registerIntentHandler("simplequarry:quarry_blacklist", Supplier.class, (mod, data) -> QUARRY_BLACKLIST.add((IBlockState) data.get()));
+		IntentManager.registerIntentHandler("simplequarry:quarry_blacklist", IBlockState.class, (mod, data) -> QUARRY_BLACKLIST.add(data));
 	}
 	
 	@EventHandler
