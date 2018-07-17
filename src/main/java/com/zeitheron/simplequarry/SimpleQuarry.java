@@ -47,11 +47,11 @@ public class SimpleQuarry
 	public static SimpleQuarry instance;
 	
 	public static boolean invalidCertificate;
-	public static final IVariable<String> SYNC_CONFIGS;
-	public static NBTTagCompound sync_configs_nbt;
+	public static final IVariable<String> SYNC_CONFIGS = new VariableString("simplequarry:configs");
+	public static NBTTagCompound sync_configs_nbt = new NBTTagCompound();
 	public static CreativeTabs tab;
-	public static final Set<IBlockState> QUARRY_BLACKLIST;
-	public static Logger LOG = LogManager.getLogger(InfoSQ.MOD_ID);
+	public static final Set<IBlockState> QUARRY_BLACKLIST = new HashSet<IBlockState>();
+	public static final Logger LOG = LogManager.getLogger(InfoSQ.MOD_ID);
 	
 	@EventHandler
 	public void certificateViolation(FMLFingerprintViolationEvent e)
@@ -127,12 +127,5 @@ public class SimpleQuarry
 	public void serverStopped(FMLServerStoppedEvent e)
 	{
 		proxy.serverStopped();
-	}
-	
-	static
-	{
-		SYNC_CONFIGS = new VariableString("simplequarry:configs");
-		sync_configs_nbt = new NBTTagCompound();
-		QUARRY_BLACKLIST = new HashSet<IBlockState>();
 	}
 }
