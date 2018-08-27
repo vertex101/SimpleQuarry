@@ -72,20 +72,23 @@ public class TilePoweredQuarry extends TileFuelQuarry implements IEnergyStorage,
 	{
 		ItemStack stack = inv.getStackInSlot(0);
 		
-		if(stack.getItem() instanceof IPowerContainerItem)
+		if(!stack.isEmpty())
 		{
-			IPowerContainerItem pc = (IPowerContainerItem) stack.getItem();
-			int canExtract = pc.extractEnergy(stack, pc.getEnergyStored(stack), true);
-			canExtract = Math.min(receiveEnergy(canExtract, true), canExtract);
-			pc.extractEnergy(stack, canExtract, false);
-			receiveEnergy(canExtract, false);
-		} else if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
-		{
-			IEnergyStorage pc = stack.getCapability(CapabilityEnergy.ENERGY, null);
-			int canExtract = pc.extractEnergy(pc.getEnergyStored(), true);
-			canExtract = Math.min(receiveEnergy(canExtract, true), canExtract);
-			pc.extractEnergy(canExtract, false);
-			receiveEnergy(canExtract, false);
+			if(stack.getItem() instanceof IPowerContainerItem)
+			{
+				IPowerContainerItem pc = (IPowerContainerItem) stack.getItem();
+				int canExtract = pc.extractEnergy(stack, pc.getEnergyStored(stack), true);
+				canExtract = Math.min(receiveEnergy(canExtract, true), canExtract);
+				pc.extractEnergy(stack, canExtract, false);
+				receiveEnergy(canExtract, false);
+			} else if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
+			{
+				IEnergyStorage pc = stack.getCapability(CapabilityEnergy.ENERGY, null);
+				int canExtract = pc.extractEnergy(pc.getEnergyStored(), true);
+				canExtract = Math.min(receiveEnergy(canExtract, true), canExtract);
+				pc.extractEnergy(canExtract, false);
+				receiveEnergy(canExtract, false);
+			}
 		}
 		
 		for(int i = 0; i < 5; ++i)
@@ -106,6 +109,8 @@ public class TilePoweredQuarry extends TileFuelQuarry implements IEnergyStorage,
 		
 		if(!world.isRemote && state0.getBlock() == BlocksSQ.powered_quarry && state0.getValue(IBlockEnableable.ENABLED) && y < 1)
 		{
+			BlockPos pos = this.pos;
+			
 			world.setBlockState(pos, state0.withProperty(IBlockEnableable.ENABLED, false));
 			validate();
 			world.setTileEntity(pos, this);

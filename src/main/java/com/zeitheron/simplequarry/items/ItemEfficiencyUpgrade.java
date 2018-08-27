@@ -11,7 +11,7 @@ public class ItemEfficiencyUpgrade extends ItemUpgrade
 	
 	public ItemEfficiencyUpgrade(int lvl, float save)
 	{
-		setUnlocalizedName("upgrade_efficiency_" + (lvl + 1));
+		setTranslationKey("upgrade_efficiency_" + (lvl + 1));
 		if(upgrades[lvl] == null)
 			upgrades[lvl] = this;
 		this.lvl = lvl;

@@ -17,6 +17,8 @@ public class QFStorage implements IQFConsumer, IQFProducer
 	{
 		this(capacity);
 		this.storedQF = Math.min(capacity, QF);
+		if(Double.isInfinite(this.storedQF) || Double.isNaN(this.storedQF))
+			this.storedQF = 0F;
 	}
 	
 	@Override
@@ -28,6 +30,8 @@ public class QFStorage implements IQFConsumer, IQFProducer
 	@Override
 	public double getStoredQF(EnumFacing to)
 	{
+		if(Double.isInfinite(this.storedQF) || Double.isNaN(this.storedQF))
+			this.storedQF = 0F;
 		return this.storedQF;
 	}
 	
@@ -40,17 +44,19 @@ public class QFStorage implements IQFConsumer, IQFProducer
 	@Override
 	public double produceQF(EnumFacing to, double howMuch, boolean simulate)
 	{
+		if(Double.isInfinite(this.storedQF) || Double.isNaN(this.storedQF))
+			this.storedQF = 0F;
 		double extracted = Math.min(howMuch, this.storedQF);
 		if(!simulate)
-		{
 			this.storedQF -= extracted;
-		}
 		return extracted;
 	}
 	
 	@Override
 	public double consumeQF(EnumFacing from, double howMuch, boolean simulate)
 	{
+		if(Double.isInfinite(this.storedQF) || Double.isNaN(this.storedQF))
+			this.storedQF = 0F;
 		double accepted = Math.min(this.capacity - this.storedQF, howMuch);
 		if(!simulate)
 			this.storedQF += accepted;
@@ -59,6 +65,8 @@ public class QFStorage implements IQFConsumer, IQFProducer
 	
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
+		if(Double.isInfinite(this.storedQF) || Double.isNaN(this.storedQF))
+			this.storedQF = 0F;
 		nbt.setDouble("QFStored", this.storedQF);
 		nbt.setDouble("QFCapacity", this.capacity);
 		return nbt;
@@ -68,6 +76,8 @@ public class QFStorage implements IQFConsumer, IQFProducer
 	{
 		this.storedQF = nbt.getDouble("QFStored");
 		this.capacity = nbt.getDouble("QFCapacity");
+		if(Double.isInfinite(this.storedQF) || Double.isNaN(this.storedQF))
+			this.storedQF = 0F;
 	}
 	
 	public static QFStorage readQFStorage(NBTTagCompound nbt)

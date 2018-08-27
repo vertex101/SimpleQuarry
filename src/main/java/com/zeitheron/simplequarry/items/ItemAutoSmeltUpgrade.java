@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class ItemAutoSmeltUpgrade extends ItemUpgrade
 {
 	{
-		setUnlocalizedName("upgrade_auto_smelt");
+		setTranslationKey("upgrade_auto_smelt");
 		quarryUseMultiply = 4;
 	}
 	

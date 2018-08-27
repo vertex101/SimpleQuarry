@@ -108,17 +108,14 @@ public class ContainerFilter extends TransferableContainer<FilterData>
 				useod = nbt.getBoolean("OreDictionary");
 				usemeta = nbt.getBoolean("Metadata");
 				ignorenbt = nbt.getBoolean("IgnoreNBT");
-				
-				NBTTagList items = nbt.getTagList("Filter", NBT.TAG_COMPOUND);
-				
-				for(int i = 0; i < Math.min(inventory.getSizeInventory(), items.tagCount()); ++i)
-					inventory.setInventorySlotContents(i, new ItemStack(items.getCompoundTagAt(i)));
+				inventory.readFromNBT(nbt.getCompoundTag("Filter"));
 			}
 		}
 		
 		public ItemStack getStack()
 		{
 			NBTTagCompound nbt = stack.getTagCompound();
+			
 			if(nbt == null)
 				nbt = new NBTTagCompound();
 			
@@ -126,11 +123,8 @@ public class ContainerFilter extends TransferableContainer<FilterData>
 			nbt.setBoolean("OreDictionary", useod);
 			nbt.setBoolean("Metadata", usemeta);
 			nbt.setBoolean("IgnoreNBT", ignorenbt);
+			nbt.setTag("Filter", inventory.writeToNBT(new NBTTagCompound()));
 			
-			NBTTagList items = new NBTTagList();
-			for(int i = 0; i < inventory.getSizeInventory(); ++i)
-				items.appendTag(inventory.getStackInSlot(i).serializeNBT());
-			nbt.setTag("Filter", items);
 			stack.setTagCompound(nbt);
 			return stack;
 		}

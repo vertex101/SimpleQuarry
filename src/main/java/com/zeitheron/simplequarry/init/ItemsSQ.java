@@ -13,7 +13,7 @@ import net.minecraft.item.Item;
 
 public class ItemsSQ
 {
-	public static final Item UPGRADE_BASE = new Item().setUnlocalizedName("upgrade_base");
+	public static final Item UPGRADE_BASE = new Item().setTranslationKey("upgrade_base");
 	public static final ItemUpgrade UPGRADE_FILTER = new ItemFilterUpgrade();
 	public static final ItemUpgrade UPGRADE_UNIFICATION = new ItemUnificationUpgrade();
 	public static final ItemUpgrade UPGRADE_SILK = new ItemSilkUpgrade();

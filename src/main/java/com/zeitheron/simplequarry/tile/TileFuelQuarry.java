@@ -69,7 +69,7 @@ public class TileFuelQuarry extends TileSyncableTickable implements IQFConsumer,
 	{
 		double qf;
 		ItemStack stack;
-		Chunk c = world.getChunkFromBlockCoords(pos);
+		Chunk c = world.getChunk(pos);
 		int chunkX = c.x;
 		int chunkZ = c.z;
 		if(world.isRemote)

@@ -17,7 +17,7 @@ public class ItemUnificationUpgrade extends ItemUpgrade
 {
 	public ItemUnificationUpgrade()
 	{
-		setUnlocalizedName("upgrade_unification");
+		setTranslationKey("upgrade_unification");
 		quarryUseMultiply = 1.25F;
 	}
 	

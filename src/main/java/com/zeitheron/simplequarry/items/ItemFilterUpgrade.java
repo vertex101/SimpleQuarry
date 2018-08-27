@@ -22,7 +22,7 @@ public class ItemFilterUpgrade extends ItemUpgrade
 {
 	public ItemFilterUpgrade()
 	{
-		setUnlocalizedName("upgrade_filter");
+		setTranslationKey("upgrade_filter");
 		quarryUseMultiply = 1;
 	}
 	

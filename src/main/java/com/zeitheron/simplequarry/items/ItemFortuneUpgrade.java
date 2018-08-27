@@ -11,7 +11,7 @@ public class ItemFortuneUpgrade extends ItemUpgrade
 	
 	public ItemFortuneUpgrade(int lvl)
 	{
-		setUnlocalizedName("upgrade_fortune_" + (lvl + 1));
+		setTranslationKey("upgrade_fortune_" + (lvl + 1));
 		if(upgrades[lvl] == null)
 			upgrades[lvl] = this;
 		this.lvl = lvl;

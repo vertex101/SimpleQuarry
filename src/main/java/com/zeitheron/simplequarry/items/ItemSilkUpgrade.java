@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 public class ItemSilkUpgrade extends ItemUpgrade
 {
 	{
-		setUnlocalizedName("upgrade_silk");
+		setTranslationKey("upgrade_silk");
 		quarryUseMultiply = 8;
 	}
 	
